@@ -7,17 +7,29 @@
 # Edited by ProfFan
 #################################################
 
+WanIp=""
+LastIpFile=last.ip
+
 # OS Detection
 case $(uname) in
   'Linux')
     echo "Linux"
     arIpAddress() {
-        local extip
-        extip=$(ip -o -4 addr list | grep -Ev '\s(docker|lo)' | awk '{print $4}' | cut -d/ -f1 | grep -Ev '(^127\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$)|(^10\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$)|(^172\.1[6-9]{1}[0-9]{0,1}\.[0-9]{1,3}\.[0-9]{1,3}$)|(^172\.2[0-9]{1}[0-9]{0,1}\.[0-9]{1,3}\.[0-9]{1,3}$)|(^172\.3[0-1]{1}[0-9]{0,1}\.[0-9]{1,3}\.[0-9]{1,3}$)|(^192\.168\.[0-9]{1,3}\.[0-9]{1,3}$)')
-        if [ "x${extip}" = "x" ]; then
-	        extip=$(ip -o -4 addr list | grep -Ev '\s(docker|lo)' | awk '{print $4}' | cut -d/ -f1 )
-        fi
-        echo $extip
+        # local extip
+        # extip=$(ip -o -4 addr list | grep -Ev '\s(docker|lo)' | awk '{print $4}' | cut -d/ -f1 | grep -Ev '(^127\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$)|(^10\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$)|(^172\.1[6-9]{1}[0-9]{0,1}\.[0-9]{1,3}\.[0-9]{1,3}$)|(^172\.2[0-9]{1}[0-9]{0,1}\.[0-9]{1,3}\.[0-9]{1,3}$)|(^172\.3[0-1]{1}[0-9]{0,1}\.[0-9]{1,3}\.[0-9]{1,3}$)|(^192\.168\.[0-9]{1,3}\.[0-9]{1,3}$)')
+        # if [ "x${extip}" = "x" ]; then
+	#         extip=$(ip -o -4 addr list | grep -Ev '\s(docker|lo)' | awk '{print $4}' | cut -d/ -f1 )
+        # fi
+        # echo $extip
+
+	if [ "x${WanIp}" = "x" ]; then
+		WanIp=`curl -s -d "ip=myip" http://ip.taobao.com/service/getIpInfo2.php  |  sed 's/.*ip":"\([0-9]*\.[0-9]*\.[0-9]*\.[0-9]*\)".*/\1/g'`
+	fi
+	
+	if [ "x${WanIp}" = "x" ]; then
+		WanIp=`curl -s http://city.ip138.com/ip2city.asp | grep center | sed 's/.*\[\([0-9\.]*\)\].*/\1/g' `
+	fi
+	echo $WanIp
     }
     ;;
   'FreeBSD')
@@ -111,7 +123,12 @@ arPass=""
 # arg: domain
 arNslookup() {
     #wget --quiet --output-document=- $inter$1
-    echo ""
+    if [ ! -f $LastIpFile ]; then
+	echo ""
+	return
+    fi
+
+    cat $LastIpFile | grep $1 | awk '{print $2}'
 }
 
 # Get data
@@ -156,12 +173,23 @@ arDdnsUpdate() {
 # DDNS Check
 # Arg: Main Sub
 arDdnsCheck() {
+    arIpAddress
+
     local postRS
     local hostIP=$(arIpAddress)
     local lastIP=$(arNslookup "${2}.${1}")
     echo "hostIP: ${hostIP}"
     echo "lastIP: ${lastIP}"
     if [ "$lastIP" != "$hostIP" ]; then
+	echo "--- Update last.ip"
+	if [ -f $LastIpFile ]
+	then
+		grep -v "${2}.${1}" $LastIpFile > $LastIpFile.bak
+	fi
+	echo "${2}.${1} ${hostIP}" >> $LastIpFile.bak
+	mv $LastIpFile.bak $LastIpFile
+
+	echo "--- Update dns zone"
         postRS=$(arDdnsUpdate $1 $2)
         echo "postRS: ${postRS}"
         if [ $? -ne 1 ]; then
@@ -178,4 +206,11 @@ arDdnsCheck() {
 #    arDdnsCheck "${domains[index]}" "${subdomains[index]}"
 #done
 
+date
 . $DIR/dns.conf
+
+echo ""
+echo ""
+echo ""
+echo "+++++++++++++++++++++++++++"
+
