@@ -7,4 +7,5 @@ arToken="12345,7676f344eaeaea9074c123451234512d"
 
 # Place each domain you want to check as follows
 # you can have multiple arDdnsCheck blocks
-arDdnsCheck "test.org" "subdomain"
+arDdnsCheck "test.org" "subdomain" "arIpSource_Auto"
+#arDdnsCheck "test.org" "subdomain" "arIpSource_OpenWrtIF_IPv4" "pppoe-wan"
