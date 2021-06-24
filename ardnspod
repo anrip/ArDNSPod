@@ -14,6 +14,19 @@
 #
 #############################################################
 
+# Decide how to query
+
+QueryMethod=0
+if type curl >/dev/null 2>&1; then
+    QueryMethod=0
+else
+    if (wget -t 2 www.baidu.com -O - 2>&1) >/dev/null; then
+        QueryMethod=1
+    else
+        QueryMethod=2
+    fi
+fi
+
 # TokenID,Token
 
 export arToken=""
@@ -44,10 +57,12 @@ arWanIp4() {
     esac
 
     if [ -z "$hostIp" ]; then
-        if type wget >/dev/null 2>&1; then
+        if [[ $QueryMethod == 0 ]]; then
+            hostIp=$(curl -s https://v4.myip.la)
+        elif [[ $QueryMethod == 1 ]]; then
             hostIp=$(wget -q -O - -t 2 https://v4.myip.la)
         else
-            hostIp=$(curl -s https://v4.myip.la)
+            hostIp=$(wget -q -O - https://v4.myip.la)
         fi
     fi
 
@@ -83,10 +98,12 @@ arWanIp6() {
     esac
 
     if [ -z "$hostIp" ]; then
-        if type wget >/dev/null 2>&1; then
+        if [[ $QueryMethod == 0 ]]; then
+            hostIp=$(curl -s https://v6.myip.la)
+        elif [[ $QueryMethod == 1 ]]; then
             hostIp=$(wget -q -O - -t 2 https://v6.myip.la)
         else
-            hostIp=$(curl -s https://v6.myip.la)
+            hostIp=$(wget -q -O - https://v6.myip.la)
         fi
     fi
 
@@ -114,10 +131,12 @@ arDdnsApi() {
     local apiurl="https://dnsapi.cn/${1:?'Info.Version'}"
     local params="login_token=$arToken&format=json&$2"
 
-    if type wget >/dev/null 2>&1; then
+    if [[ $QueryMethod == 0 ]]; then
+        curl -s -A "$agent" -d "$params" "$apiurl"
+    elif [[ $QueryMethod == 1 ]]; then
         wget -q -O - -t 2 --no-check-certificate -U "$agent" --post-data "$params" "$apiurl"
     else
-        curl -s -A "$agent" -d "$params" "$apiurl"
+        wget -q -O - --no-check-certificate -U "$agent" --post-data "$params" "$apiurl"
     fi
 
 }
