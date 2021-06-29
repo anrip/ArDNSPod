@@ -24,7 +24,7 @@ Updating Record for test.rehi.org
 
 ### 小提示
 
-- 如需单文件运行，参考`ddnspod.sh`中的配置项，添加到`ardnspod`底部，直接运行`ardnspod`即可
+如需单文件运行，参考`ddnspod.sh`中的配置项，添加到`ardnspod`底部，直接运行`ardnspod`即可
 
 ```
 echo "arToken=12345,7676f344eaeaea9074c123451234512d" >> ./ardnspod
@@ -33,7 +33,8 @@ echo "arDdnsCheck test.org subdomain" >> ./ardnspod
 
 ### 代码提交
 
-- 为保证脚本最大兼容性，提交代码时请注意以下2个问题
+为保证脚本最大兼容性，提交代码时请注意以下2个问题
+
 - 脚本应以`busybox`或`sh`环境为基础，请勿更改为`bash`或`dash`等shell环境
 - 请保证`wget`命令参数兼容`busybox`模式，对于非嵌入式平台应尽量使用`curl`作为请求工具
 
