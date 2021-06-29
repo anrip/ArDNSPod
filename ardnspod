@@ -2,7 +2,7 @@
 #
 
 #############################################################
-# AnripDdns v6.2.0
+# AnripDdns v6.2.1
 #
 # Dynamic DNS using DNSPod API
 #
@@ -109,7 +109,7 @@ arWanIp6() {
 
 arDdnsApi() {
 
-    local agent="AnripDdns/6.1.0(wang@rehiy.com)"
+    local agent="RehiyDdns/6.2.0(wang@rehiy.com)"
 
     local apiurl="https://dnsapi.cn/${1:?'Info.Version'}"
     local params="login_token=$arToken&format=json&$2"
@@ -141,6 +141,7 @@ arDdnsIds() {
     fi
 
     echo $recordId
+
 }
 
 # Fetch Record Ip
@@ -268,4 +269,5 @@ arDdnsCheck() {
     if [ $errCode -ne 0 ]; then
         return 1
     fi
+
 }
