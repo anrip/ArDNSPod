@@ -33,6 +33,11 @@ echo "arDdnsCheck test.org subdomain" >> ./ardnspod
 
 # 最近更新
 
+2021/6/29
+
+- 优先采用 curl 请求网络
+- 移除 wget 的 -t 参数
+
 2021/3/3
 
 - 强化获取IP结果检测
