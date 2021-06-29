@@ -31,6 +31,10 @@ echo "arToken=12345,7676f344eaeaea9074c123451234512d" >> ./ardnspod
 echo "arDdnsCheck test.org subdomain" >> ./ardnspod
 ```
 
+### 代码提交
+
+为兼容嵌入式设备，`wget`命令参数应保持`busybox`兼容模式，对于非嵌入式平台应尽量使用`curl`作为请求工具。
+
 # 最近更新
 
 2021/6/29
