@@ -2,7 +2,7 @@
 #
 
 #############################################################
-# AnripDdns v6.2.1
+# AnripDdns v6.2.0
 #
 # Dynamic DNS using DNSPod API
 #
@@ -47,7 +47,7 @@ arWanIp4() {
         if type curl >/dev/null 2>&1; then
             hostIp=$(curl -s https://v4.myip.la)
         else
-            hostIp=$(wget -q -O - -t 2 https://v4.myip.la)
+            hostIp=$(wget -q -O- https://v4.myip.la)
         fi
     fi
 
@@ -86,7 +86,7 @@ arWanIp6() {
         if type curl >/dev/null 2>&1; then
             hostIp=$(curl -s https://v6.myip.la)
         else
-            hostIp=$(wget -q -O - -t 2 https://v6.myip.la)
+            hostIp=$(wget -q -O- https://v6.myip.la)
         fi
     fi
 
@@ -117,7 +117,7 @@ arDdnsApi() {
     if type curl >/dev/null 2>&1; then
         curl -s -A "$agent" -d "$params" "$apiurl"
     else
-        wget -q -O - -t 2 --no-check-certificate -U "$agent" --post-data "$params" "$apiurl"
+        wget -q -O- --no-check-certificate -U "$agent" --post-data "$params" "$apiurl"
     fi
 
 }
