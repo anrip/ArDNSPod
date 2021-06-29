@@ -33,7 +33,9 @@ echo "arDdnsCheck test.org subdomain" >> ./ardnspod
 
 ### 代码提交
 
-为兼容嵌入式设备，`wget`命令参数应保持`busybox`兼容模式，对于非嵌入式平台应尽量使用`curl`作为请求工具。
+- 为保证脚本最大兼容性，提交代码时请注意以下2个问题
+- 脚本应以`busybox`或`sh`环境为基础，请勿更改为`bash`或`dash`等shell环境
+- 请保证`wget`命令参数兼容`busybox`模式，对于非嵌入式平台应尽量使用`curl`作为请求工具
 
 # 最近更新
 
