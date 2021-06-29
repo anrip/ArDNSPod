@@ -2,7 +2,7 @@
 #
 
 #############################################################
-# AnripDdns v6.2.0
+# AnripDdns v6.2.1
 #
 # Dynamic DNS using DNSPod API
 #
@@ -44,10 +44,10 @@ arWanIp4() {
     esac
 
     if [ -z "$hostIp" ]; then
-        if type wget >/dev/null 2>&1; then
-            hostIp=$(wget -q -O - -t 2 https://v4.myip.la)
-        else
+        if type curl >/dev/null 2>&1; then
             hostIp=$(curl -s https://v4.myip.la)
+        else
+            hostIp=$(wget -q -O - -t 2 https://v4.myip.la)
         fi
     fi
 
@@ -83,10 +83,10 @@ arWanIp6() {
     esac
 
     if [ -z "$hostIp" ]; then
-        if type wget >/dev/null 2>&1; then
-            hostIp=$(wget -q -O - -t 2 https://v6.myip.la)
-        else
+        if type curl >/dev/null 2>&1; then
             hostIp=$(curl -s https://v6.myip.la)
+        else
+            hostIp=$(wget -q -O - -t 2 https://v6.myip.la)
         fi
     fi
 
@@ -114,10 +114,10 @@ arDdnsApi() {
     local apiurl="https://dnsapi.cn/${1:?'Info.Version'}"
     local params="login_token=$arToken&format=json&$2"
 
-    if type wget >/dev/null 2>&1; then
-        wget -q -O - -t 2 --no-check-certificate -U "$agent" --post-data "$params" "$apiurl"
-    else
+    if type curl >/dev/null 2>&1; then
         curl -s -A "$agent" -d "$params" "$apiurl"
+    else
+        wget -q -O - -t 2 --no-check-certificate -U "$agent" --post-data "$params" "$apiurl"
     fi
 
 }
